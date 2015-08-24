@@ -1,0 +1,5 @@
+/* testing ability to remove comments */
+
+/* nested comments /* don't exist */ so this should not be removed */
+
+" blah /* blah */ should say blah blah because no comments in strings "
