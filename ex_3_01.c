@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <time.h>
 
 /* find x in sorted array v of length n*/
 int binsearch(int x, int v[], int n)
@@ -45,9 +46,28 @@ int main()
 	{
 		test_array[i] = i;
 	}
+	test_array[3] = 4;
 
-	printf("\n%d", binsearch_fast(3, test_array, 10));
-	printf("\nshould be 3");
+	int result;
+	int numruns = 1000;
+
+	clock_t begin, end;
+	double time_spent, time_spent_fast;
+
+	begin = clock();
+	for (int i = 0; i < numruns; i++)
+		result = binsearch(3, test_array, 10);
+	end = clock();
+	time_spent = (double)(end-begin) / CLOCKS_PER_SEC;
+	printf("\n%f sec\tfor binsearch", time_spent);
+
+	begin = clock();
+	for (int i = 0; i < numruns; i++)
+		result = binsearch_fast(3, test_array, 10);
+	end = clock();
+	time_spent_fast = (double)(end-begin) / CLOCKS_PER_SEC;
+	printf("\n%f sec\tfor binsearch_fast", time_spent_fast);
 
 	printf("\n\n");
+
 }
