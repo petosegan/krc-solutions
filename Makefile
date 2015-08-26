@@ -1,4 +1,4 @@
-CFLAGS=-Wall -g
+CFLAGS=-Wall -g -lm
 
 SOURCES=$(wildcard *.c)
 EXECUTABLES=$(SOURCES:%.c=%)
