@@ -9,7 +9,7 @@ void ungetch(int);
 /* getint: get next integer from input into *pn*/
 int getint(int *pn)
 {
-	int c, sign, signchar;
+	int c, sign;
 
 	while (isspace(c = getch())) /* skip white space */
 		;
@@ -19,12 +19,10 @@ int getint(int *pn)
 	}
 	sign = (c == '-') ? -1 : 1;
 	if (c == '+' || c == '-') {
-		signchar = c;
 		if (!isdigit(c = getchar())) {
 			ungetch(c);
 			return 0;
 		}
-		ungetch(c);
 	}
 
 	for (*pn = 0; isdigit(c); c = getch())
