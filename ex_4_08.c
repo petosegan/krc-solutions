@@ -183,22 +183,26 @@ int getop(char s[])
 	return NUMBER;
 }
 
-#define BUFSIZE 100
 
-char buf[BUFSIZE];
-int bufp = 0;
+char buf;
+int buf_set = 0;
 
 int getch(void)
 {
-	return (bufp > 0) ? buf[--bufp] : getchar();
+	char result;
+	result = (buf_set > 0) ? buf : getchar();
+	buf_set = 0;
+	return result;
 }
 
 void ungetch(int c)
 {
-	if (bufp >= BUFSIZE)
+	if (buf_set > 0)
 		printf("ungetch: too many characters\n");
-	else
-		buf[bufp++] = c;
+	else {
+		buf = c;
+		buf_set = 1;
+	}
 }
 
 char vars[26];

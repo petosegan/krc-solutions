@@ -183,26 +183,32 @@ int getop(char s[])
 	return NUMBER;
 }
 
+#define BUFSIZE 100
 
-char buf;
-int buf_set = 0;
+char buf[BUFSIZE];
+int bufp = 0;
 
 int getch(void)
 {
-	char result;
-	result = (buf_set > 0) ? buf : getchar();
-	buf_set = 0;
-	return result;
+	return (bufp > 0) ? buf[--bufp] : getchar();
 }
 
 void ungetch(int c)
 {
-	if (buf_set > 0)
+	if (bufp >= BUFSIZE)
 		printf("ungetch: too many characters\n");
-	else {
-		buf = c;
-		buf_set = 1;
-	}
+	else
+		buf[bufp++] = c;
+}
+
+/* ungets: push back an entire string onto the input
+ * I chose to implement this without reference to buf
+ * in order to minimize the coupling to the implementation
+ * of the buffer. */
+void ungets(char s[])
+{
+	for (int i = strlen(s); i >= 0; i++) {
+		ungetch(s[i]);
 }
 
 char vars[26];
