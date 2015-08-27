@@ -201,6 +201,16 @@ void ungetch(int c)
 		buf[bufp++] = c;
 }
 
+/* ungets: push back an entire string onto the input
+ * I chose to implement this without reference to buf
+ * in order to minimize the coupling to the implementation
+ * of the buffer. */
+void ungets(char s[])
+{
+	for (int i = strlen(s); i >= 0; i++) {
+		ungetch(s[i]);
+}
+
 char vars[26];
 
 double var_get(char c)
