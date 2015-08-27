@@ -15,6 +15,8 @@ void clear(void);
 double var_get(char);
 void var_set(char, double);
 
+double recent;
+
 int main()
 {
 	int type;
@@ -68,7 +70,9 @@ int main()
 					printf("error: zero divisor\n");
 				break;
 			case '\n':
-				printf("\t%.8g\n", pop());
+				op1 = pop();
+				printf("\t%.8g\n", op1);
+				recent = op1;
 				break;
 			case 'd':
 				op1 = pop();
@@ -84,10 +88,14 @@ int main()
 			case 'p':
 				op1 = pop();
 				printf("\t%.8g\n", op1);
+				recent = op1;
 				push(op1);
 				break;
 			case 'c':
 				clear();
+				break;
+			case 'r':
+				push(recent);
 				break;
 			default:
 				printf("error: unknown command %s\n", s);
