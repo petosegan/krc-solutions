@@ -15,7 +15,7 @@ int day_of_year(int year, int month, int day)
 	}
 
 	leap = (year%4 == 0 && year%100 != 0) || year%400 == 0;
-	if (day > daytab[leap][month]) {
+	if (day <= 0 || day > daytab[leap][month]) {
 		printf("\nInvalid Day");
 		return -1;
 	}
