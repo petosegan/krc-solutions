@@ -3,19 +3,19 @@
 
 int my_getline(char *p, int lim)
 {
-	int c, i;
+	int c;
+	char *q;
+	q = p;
 
-	printf("\nfinished declarations\n");
-
-	for (i = 0; i < lim-1 && (c=getchar()) != EOF && c != '\n'; ++i)
+	while((c=getchar()) != EOF && c != '\n')
 	{
-		*(p+i) = c;
+		*(q++) = c;
 	}
 	if (c == '\n') {
-		*(p+(i++)) = c;
+		*(q++) = c;
 	}
-	*(p+i) = '\0';
-	return i;
+	*q = '\0';
+	return (q-p);
 }
 
 int main()
