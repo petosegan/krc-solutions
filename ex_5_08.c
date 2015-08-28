@@ -46,8 +46,14 @@ int main()
 	int day;
 
 	printf("\n%d should be 1", day_of_year(2014, 1, 1));
+	printf("\n%d should be 60", day_of_year(2014, 3, 1));
+	printf("\n%d should be 61", day_of_year(2016, 3, 1));
 	month_day(2014, 1, &month, &day);
 	printf("\n%d, %d should be 1, 1", month, day);
+	month_day(2014, 60, &month, &day);
+	printf("\n%d, %d should be 3, 1", month, day);
+	month_day(2016, 60, &month, &day);
+	printf("\n%d, %d should be 2, 29", month, day);
 	day_of_year(2014, 13, 1);
 	day_of_year(2014, 1, 44);
 	month_day(2014, 400, &month, &day);
