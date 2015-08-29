@@ -29,10 +29,8 @@ int my_getline(char s[], int lim)
 
 	for (i=0; i<lim - 1 && (c=getchar())!=EOF && c!='\n'; ++i)
 		s[i] = c;
-	if (c == '\n'){
-		s[i] = c;
-		++i;
-	}
+	if (c == '\n')
+		s[i++] = c;
 	s[i] = '\0';
 	return i;
 }
@@ -48,18 +46,12 @@ void detab(char from[], char to[])
 	int dist_to_tab = 0;
 
 	while(from[i_from] != '\0'){
-		if (from[i_from] != '\t'){
-			to[i_to] = from[i_from];
-			i_to++;
-			i_from++;
-		}
+		if (from[i_from] != '\t')
+			to[i_to++] = from[i_from++];
 		else {
 			dist_to_tab = COL_WIDTH - i_to % COL_WIDTH;
-			while(dist_to_tab > 0){
-				to[i_to] = ' ';
-				i_to++;
-				dist_to_tab--;
-			}
+			while(dist_to_tab-- > 0)
+				to[i_to++] = ' ';
 			i_from++;
 		}
 
@@ -87,22 +79,19 @@ void entab(char from[], char to[])
 		 * space, tab boundary - insert tab, reset num_white */
 		if (from[i_from] != ' '){
 			if (num_white != 0) {
-				if ((i_from % COL_WIDTH) == 0){
+				if ((i_from % COL_WIDTH) == 0)
 					to[i_to++] = '\t';
-				}
 				else {
-					while(num_white-- > 0){
+					while(num_white-- > 0)
 						to[i_to++] = ' ';
-					}
 				}
 				num_white = 0;
 			}
 			to[i_to++] = from[i_from++];
 		}
 		else {
-			if ((i_from % COL_WIDTH) != 0) {
+			if ((i_from % COL_WIDTH) != 0) 
 				num_white++;
-			}
 			else {
 				to[i_to++] = '\t';
 				num_white = 1;
