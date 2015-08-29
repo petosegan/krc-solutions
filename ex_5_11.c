@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 	while ((len=my_getline(line, MAXLINE)) > 0){
 		detab(line, line_detabbed, argv);
 		entab(line_detabbed, line_entabbed, argv);
-		printf("%s", line_detabbed);
+		printf("%s", line_entabbed);
 	}
 	return 0;
 }
@@ -47,7 +47,7 @@ void detab(char *from, char *to, char *tabstops[])
 		if (*from != '\t')
 			*(to++) = *(from++);
 		else {
-			while ((to-to_start) > next_tab) {
+			while ((to-to_start) >= next_tab) {
 				if (*tabstops)
 					next_tab += atoi(*(tabstops++));
 				else
@@ -62,10 +62,12 @@ void detab(char *from, char *to, char *tabstops[])
 }
 /* replace blank space with appropriate number of spaces and tabs
  * assumes no tabs in input */
-void entab(char *from, char *to, char *tabstops[])
+void entab_old(char *from, char *to, char *tabstops[])
 {
 	int num_white = 0;
 	char *from_start = from;
+
+	tabstops++; /* skip first argv */
 
 	while(*from != '\0'){
 		/* four cases:
@@ -94,6 +96,37 @@ void entab(char *from, char *to, char *tabstops[])
 				num_white = 0;
 			}
 			from++;
+		}
+	}
+	*to = '\0';
+}
+
+void entab(char *from, char *to, char *tabstops[])
+{
+	int next_tab = 0, num_space = 0;
+	char *from_start = from;
+
+	tabstops++;
+
+	while (*from != '\0') {
+		if (*from != ' ') {
+			while (num_space-- > 0) 
+				*(to++) = ' ';
+			num_space = 0;
+			*(to++) = *(from++);
+		}
+		else {
+			while((from - from_start) >= next_tab) {
+				if (*tabstops)
+					next_tab += atoi(*(tabstops++));
+				else
+					next_tab += COL_WIDTH;
+			}
+			if ((from++ - from_start) == next_tab - 1) {
+				*(to++) = '\t';
+				num_space = 0;
+			} else 
+				num_space++;
 		}
 	}
 	*to = '\0';
