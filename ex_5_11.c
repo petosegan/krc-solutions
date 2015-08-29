@@ -1,10 +1,11 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #define MAXLINE 1000
 #define COL_WIDTH 8
 
-void detab(char from[], char to[]);
-void entab(char from[], char to[]);
+void detab(char from[], char to[], char *tabstops[]);
+void entab(char from[], char to[], char *tabstops[]);
 int my_getline(char s[], int lim);
 
 /* replace spaces in input with appropriate number of spaces and tabs */
@@ -16,51 +17,52 @@ int main(int argc, char *argv[])
 	char line_entabbed[MAXLINE];
 
 	while ((len=my_getline(line, MAXLINE)) > 0){
-		detab(line, line_detabbed);
-		entab(line_detabbed, line_entabbed);
-		printf("%s", line_entabbed);
+		detab(line, line_detabbed, argv);
+		entab(line_detabbed, line_entabbed, argv);
+		printf("%s", line_detabbed);
 	}
 	return 0;
 }
 
-int my_getline(char s[], int lim)
+int my_getline(char *s, int lim)
 {
-	int c, i;
+	int c;
+	char *s_start = s;
 
-	for (i=0; i<lim - 1 && (c=getchar())!=EOF && c!='\n'; ++i)
-		s[i] = c;
-	if (c == '\n'){
-		s[i] = c;
-		++i;
-	}
-	s[i] = '\0';
-	return i;
+	while ((c=getchar())!=EOF && c!='\n')
+		*(s++) = c;
+	if (c == '\n')
+		*(s++) = c;
+	*s = '\0';
+	return (s - s_start);
 }
 
-void detab(char *from, char *to)
+void detab(char *from, char *to, char *tabstops[])
 {
-	int dist_to_tab = 0;
+	int next_tab = 0;
 	char *to_start = to;
+	tabstops++; /*skip first argv */
 
 	while(*from != '\0'){
-		if (*from != '\t'){
+		if (*from != '\t')
 			*(to++) = *(from++);
-		}
 		else {
-			dist_to_tab = COL_WIDTH - (to - to_start) % COL_WIDTH;
-			while(dist_to_tab > 0){
-				*(to++) = ' ';
-				dist_to_tab--;
+			while ((to-to_start) > next_tab) {
+				if (*tabstops)
+					next_tab += atoi(*(tabstops++));
+				else
+					next_tab += COL_WIDTH;
 			}
+			while(next_tab > (to-to_start))
+				*(to++) = ' ';
 			from++;
 		}
-
 	}
 	*to = '\0';
 }
 /* replace blank space with appropriate number of spaces and tabs
  * assumes no tabs in input */
-void entab(char *from, char *to)
+void entab(char *from, char *to, char *tabstops[])
 {
 	int num_white = 0;
 	char *from_start = from;
