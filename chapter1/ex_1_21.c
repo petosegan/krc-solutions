@@ -90,11 +90,11 @@ void entab(char from[], char to[])
 			to[i_to++] = from[i_from++];
 		}
 		else {
-			if ((i_from % COL_WIDTH) != 0) 
+			if ((i_from % COL_WIDTH) != (COL_WIDTH - 1)) 
 				num_white++;
 			else {
 				to[i_to++] = '\t';
-				num_white = 1;
+				num_white = 0;
 			}
 			i_from++;
 		}
