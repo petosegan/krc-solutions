@@ -18,6 +18,10 @@ int main(int argc, char *argv[])
 		c = *(*argv+1);
 		if (isdigit(c)) {
 			numlines = atoi(*argv+1);
+			if (numlines <= 0) {
+				printf("\nillegal value\n");
+				argc = -1;
+			}
 		} else {
 			printf("\ntail: illegal option %c\n", c);
 			argc = -1;
@@ -63,6 +67,9 @@ int readlines(char *lineptr[], int numlines)
 			lineptr[nlines++] = p;
 		}
 	}
+	if (nlines < numlines) {
+		lineptr[nlines] = NULL;
+	}
 	return nlines;
 }
 
@@ -71,7 +78,10 @@ void writelines(char *lineptr[], int nlines)
 	int i;
 
 	for (i = 0; i < nlines; i++) {
-		printf("%s\n", lineptr[i]);
+		if (!lineptr[i])
+			break;
+		else
+			printf("%s\n", lineptr[i]);
 	}
 }
 
