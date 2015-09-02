@@ -7,6 +7,30 @@
 #define MAXCHAR 100
 #define MAXLINES 1000
 
+char noise_words[][MAXCHAR] = {"a","about","after","all","also","an","and","another","any","are","as","at","be","because","been","before","being","between","both","but","by","came","can","come","could","did","do","each","for","from","get","got","has","had","he","have","her","here","him","himself","his","how","if","in","into","is","it","like","make","many","me","might","more","most","much","must","my","never","no","not","now","of","on","only","or","other","our","out","over","said","same","see","should","since","so","some","still","such","take","than","that","the","their","them","then","there","these","they","this","those","through","to","too","under","up","very","was","way","we","well","were","what","where","which","while","who","whom","with","without","would","you","your"};
+
+char *str_lower(char *word)
+{
+	static char lower_word[MAXCHAR];
+	char *lwp = lower_word;
+	while (*word != '\0') {
+		*(lwp++) = tolower(*(word++));
+	}
+	*lwp = '\0';
+	return lower_word;
+}
+
+int isnoise(char *word)
+{
+	int num_noise_words = sizeof(noise_words) / sizeof(noise_words[0]);
+	for (int i = 0; i < num_noise_words; i++) {
+		if (strcmp(noise_words[i], str_lower(word)) == 0) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int getword(char* word, int maxword, int *line);
 struct tnode *addtree(struct tnode *p, char *word, int line);
 void treeprint(struct tnode *treeptr);
@@ -23,7 +47,8 @@ int main()
 	root = NULL;
 	while (getword(word, MAXWORD, line) != EOF)
 		if (isalpha(word[0])) {
-			root = addtree(root, word, *line);
+			if (!isnoise(word))
+				root = addtree(root, word, *line);
 		}
 	treeprint(root);
 	return 0;
