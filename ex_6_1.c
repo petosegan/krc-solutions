@@ -97,22 +97,32 @@ int getword(char *word, int lim)
 	int last_c = 0;
 
 	while (isspace(c = getch()))
-		;
-	if (c == '#')
-		while((c = getch()) != '\n')
-			; /* skip preprocessor control lines */
-	while (isspace(c = getch()))
-		;
-	if (c == '\"')
+		last_c = c;
+	while (c == '#') {
+		while((c = getch()) != '\n') {
+			last_c = c; /* skip preprocessor control lines */
+		}
+		while (isspace(c = getch()))
+			last_c = c;
+	}
+	if (c == '\\') {
+		while ((c = getch())) {
+			if (c == '\"')
+				break;
+			last_c = c;
+		}
+		while (isspace(c = getch()))
+			last_c = c;
+	}
+	if (c == '\"') {
 		while ((c = getch())) {
 			if (last_c != '\\' && c == '\"')
 				break;
 			last_c = c;
 		} /* skip string constants */
-
-	while (isspace(c = getch()))
-		;
-
+		while (isspace(c = getch()))
+			;
+	}
 	if (c == '/') {
 		if ((c = getch()) == '*') {
 			while ((c = getch())) {
@@ -122,9 +132,6 @@ int getword(char *word, int lim)
 			}
 		}
 	} /* skip comments */
-
-	while (isspace(c = getch()))
-		;
 
 	if (c != EOF)
 		*w++ = c;
